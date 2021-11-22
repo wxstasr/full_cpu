@@ -1,0 +1,51 @@
+FROM registry.cn-shanghai.aliyuncs.com/tianchi_wx/tianchi_ocr:finals-base-v20211109
+
+RUN python -m pip install ai_hub
+
+# rec
+COPY ./PaddleOCR /PaddleOCR
+
+
+# det
+COPY ./DB /DB
+COPY ./total_text /DB/datasets/total_text
+
+
+# # pretrain
+# COPY ./models/ch_ppocr_server_v2.0_rec_pre/ /models/ch_ppocr_server_v2.0_rec_pre
+# COPY ./models/pre-trained-model-synthtext-resnet50 /models/pre-trained-model-synthtext-resnet50
+# COPY ./models/resnet50-19c8e357.pth /root/.cache/torch/hub/checkpoints/resnet50-19c8e357.pth
+
+
+# # ICDAR2019_LSVT
+# COPY ICDAR2019_LSVT/ /ICDAR2019_LSVT
+
+
+# data parse
+# COPY ./det_splits/ /ocr_tianchi/det_splits
+# COPY ./det_data_parse_dbpytorch.py /ocr_tianchi/det_data_parse_dbpytorch.py
+# COPY ./det_data_parse.py /ocr_tianchi/det_data_parse.py
+# COPY ./rec_data_parse.py /ocr_tianchi/rec_data_parse.py
+# COPY ./det_data_parse_icdar2019lsvt.py /ocr_tianchi/det_data_parse_icdar2019lsvt.py
+# COPY ./rec_data_parse_icdar2019lsvt.py /ocr_tianchi/rec_data_parse_icdar2019lsvt.py
+# COPY ./det_data_parse_dbpytorch_icdar2019.py /ocr_tianchi/det_data_parse_dbpytorch_icdar2019.py
+
+
+# cfgs
+COPY ./cfgs_20211110/ /ocr_tianchi/cfgs_20211110
+
+
+# service
+# COPY ./models/ch_ppocr_mobile_v2.0_cls_infer/  /models/ch_ppocr_mobile_v2.0_cls_infer
+
+COPY ./run.sh /ocr_tianchi/run.sh
+COPY ./server.py /ocr_tianchi/server.py
+COPY ./rec.py /ocr_tianchi/rec.py
+COPY ./det.py /ocr_tianchi/det.py
+
+
+# models
+# in /PaddleOCR/inference_tianchi/ and /DB/workspace/SegDetectorModel-seg_detector/resnet50/L1BalanceCELoss/model/
+
+
+WORKDIR /ocr_tianchi/

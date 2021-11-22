@@ -1,0 +1,6 @@
+[submodule "PaddleOCR"]
+	path = PaddleOCR
+	url = git@github.com:PaddlePaddle/PaddleOCR.git
+[submodule "DB"]
+	path = DB
+	url = git@github.com:MhLiao/DB.git

@@ -1,0 +1,57 @@
+import:
+    - '/DB/experiments/base.yaml'
+package:
+    - 'decoders.seg_detector_loss'
+define:
+  - name: train_data
+    class: ImageDataset
+    data_dir:
+        - '/ocr_data/det_data_dbpytorch_20211101/train1'
+        - '/ocr_data/det_data_dbpytorch_20211101/train2'
+        - '/ocr_data/det_data_dbpytorch_20211101/train1'
+        - '/ocr_data/det_data_dbpytorch_20211101/train2'
+        - '/ocr_data/icdar2019/part0'
+        - '/ocr_data/icdar2019/part1'
+    data_list:
+        - '/ocr_tianchi/det_splits/bill_train_list.txt'
+        - '/ocr_tianchi/det_splits/poster_train_list.txt'
+        - '/ocr_tianchi/det_splits/bill_train_list1.txt'
+        - '/ocr_tianchi/det_splits/poster_train_list1.txt'
+        - '/ocr_data/icdar2019/part0/train_list.txt'
+        - '/ocr_data/icdar2019/part1/train_list.txt'
+    processes:
+        - class: AugmentDetectionData
+          augmenter_args:
+              - ['Fliplr', 0.5]
+              - ['Flipud', 0.5]
+              - {'cls': 'Affine', 'rotate': [-10, 10], 'shear': [-5, 5]}
+              - ['Resize', [0.75, 2.0]]
+          only_resize: False
+          keep_ratio: False
+        - class: RandomCropData
+          size: [640, 640]
+          max_tries: 10
+        - class: MakeICDARData
+        - class: MakeSegDetectionData
+        - class: MakeBorderMap
+        - class: NormalizeImage
+        - class: FilterKeys
+          superfluous: ['polygons', 'filename', 'shape', 'ignore_tags', 'is_training']
+
+  - name: validate_data
+    class: ImageDataset
+    data_dir:
+      - '/ocr_data/det_data_dbpytorch_20211101/train1'
+      - '/ocr_data/det_data_dbpytorch_20211101/train2'
+    data_list:
+      - '/ocr_tianchi/det_splits/bill_val_list.txt'
+      - '/ocr_tianchi/det_splits/poster_val_list.txt'
+    processes:
+        - class: AugmentDetectionData
+          augmenter_args:
+              - ['Resize', {'width': 736, 'height': 736}]
+          only_resize: True
+          keep_ratio: True
+        - class: MakeICDARData
+        - class: MakeSegDetectionData
+        - class: NormalizeImage
