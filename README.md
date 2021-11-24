@@ -34,8 +34,7 @@ run the commonds below to build image `full_cpu:v20211119_3` for full ocr.
 ```
 cd ~/full_cpu/
 sudo docker build -f dockerfile_submit_20211119_3_full \
-  -t full_cpu:v20211119_3 \
-  ./docker_finals/
+  -t full_cpu:v20211119_3 .
 ```
 
 then run the new image to get a container `full_cpu`:
@@ -91,7 +90,7 @@ in container `full_cpu`; firstly, train det model:
 cd /DB
 python3.7 /DB/train.py \
   /ocr_tianchi/cfgs_20211110/det_db_resnet50_deform_thre.yaml \
-  --resume /models/pre-trained-model-synthtext-resnet50
+  --resume /ocr_data/pretrain/pre-trained-model-synthtext-resnet50
 ```
 
 when det train done, get model in `/DB/workspace/SegDetectorModel-seg_detector/resnet50/L1BalanceCELoss/model/final`.
@@ -99,12 +98,15 @@ when det train done, get model in `/DB/workspace/SegDetectorModel-seg_detector/r
 then, train rec model:
 
 ```
+cd /PaddleOCR/
 rm -rf /root/.visualdl/conf
 unset GREP_OPTIONS
 python3.7 -m paddle.distributed.launch --nproc_per_node=32 --backend=gloo \
   tools/train.py \
   -c /ocr_tianchi/cfgs_20211110/rec_chinese_common_train_v2.0_20210927.yml
 ```
+
+if issue error when run `tools/train.py`, please run `rm -rf /root/.visualdl/conf` again.
 
 export rec infer model:
 

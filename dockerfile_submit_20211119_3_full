@@ -38,7 +38,7 @@ COPY ./cfgs_20211110/ /ocr_tianchi/cfgs_20211110
 # service
 # COPY ./models/ch_ppocr_mobile_v2.0_cls_infer/  /models/ch_ppocr_mobile_v2.0_cls_infer
 
-COPY ./run.sh /ocr_tianchi/run.sh
+# COPY ./run.sh /ocr_tianchi/run.sh
 COPY ./server.py /ocr_tianchi/server.py
 COPY ./rec.py /ocr_tianchi/rec.py
 COPY ./det.py /ocr_tianchi/det.py
